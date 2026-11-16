@@ -1,0 +1,36 @@
+# Fly.io config for PA Water Solutions. App names are global: change `app` if 'pa-water-solutions' is taken.
+app = 'pa-water-solutions'
+primary_region = 'iad'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  DATA_DIR = '/data'
+  PORT = '8080'
+  NODE_ENV = 'production'
+  # PREINSTALL_MAX_MB = '500'
+
+[[mounts]]
+  source = 'pawater_data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [[http_service.checks]]
+    grace_period = '10s'
+    interval = '30s'
+    method = 'GET'
+    path = '/healthz'
+    timeout = '5s'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '256mb'
+  cpus = 1

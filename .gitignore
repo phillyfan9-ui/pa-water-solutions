@@ -1,0 +1,7 @@
+node_modules/
+data/leads.json
+data/uploads/
+data/bookings.json
+data/source-confirmations.json
+screenshots/
+.env*

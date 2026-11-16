@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PA Water Solutions — Know what's in your water</title>
+  <meta name="description" content="Look up your Pennsylvania home's water source, see your public water system's record, or book a well water test.">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/" class="brand"><img src="logo.svg" alt="" width="32" height="32"><span>PA Water Solutions</span></a>
+    <nav>
+      <a href="#/">Check my water</a>
+      <a href="#/upload">Upload results</a>
+      <a href="#/book">Book a consult</a>
+      <a href="#/home">About us</a>
+      <a href="#/home" data-scroll="contact" class="btn btn-small">Contact</a>
+    </nav>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div><strong>PA Water Solutions</strong><br><span class="muted">Water testing, filtration and softening for Pennsylvania homes.</span></div>
+      <div class="muted small">Beta. Public water data comes from the U.S. EPA (Community Water System Service Area Boundaries, SDWIS and ECHO) and the U.S. Census Bureau geocoder. Results are informational and are not a substitute for a certified lab test.</div>
+    </div>
+  </footer>
+
+  <!-- Templates -->
+  <template id="tpl-landing">
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Free water lookup for Pennsylvania homes</p>
+        <h1>Know what's in your water.</h1>
+        <p class="lead">Enter your address to see whether your home is on public water or a private well, and what that means for the water coming out of your tap.</p>
+        <form id="lookup-form" class="lookup" autocomplete="on">
+          <label for="address" class="sr-only">Street address</label>
+          <input id="address" name="address" type="text" placeholder="e.g. 123 Main St, Harrisburg, PA 17101" autocomplete="street-address" required>
+          <button type="submit" class="btn btn-primary">Check my water</button>
+        </form>
+        <p class="hint">Tip: include the city and ZIP code for the best match.</p>
+        <p id="lookup-error" class="error" role="alert" hidden></p>
+        <a href="#/home" class="skip">Skip — learn about us →</a>
+      </div>
+      <div class="wave" aria-hidden="true"></div>
+    </section>
+    <section class="strip">
+      <div class="strip-inner">
+        <div><span class="dot">1</span> Find your water source</div>
+        <div><span class="dot">2</span> See your system's record, or get a test</div>
+        <div><span class="dot">3</span> Get a plain-English analysis and options</div>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-loading">
+    <section class="page narrow center">
+      <div class="spinner" aria-hidden="true"></div>
+      <h2>Checking your water source…</h2>
+      <p class="muted" id="loading-step">Finding your address</p>
+    </section>
+  </template>
+
+  <template id="tpl-home">
+    <section class="hero hero-sm">
+      <div class="hero-inner">
+        <p class="eyebrow">About PA Water Solutions</p>
+        <h1>Safe, great-tasting water for every Pennsylvania home.</h1>
+        <p class="lead"><span class="ph">Placeholder</span> We're a Phoenixville, PA water company that helps homeowners understand their water and fix what's wrong with it, from hard water and iron stains to contaminants you can't see or taste.</p>
+        <a href="#/" class="btn btn-light">Check my water</a>
+      </div>
+      <div class="wave" aria-hidden="true"></div>
+    </section>
+
+    <section class="page">
+      <div class="two-col">
+        <div>
+          <h2>Our mission</h2>
+          <p><span class="ph">Placeholder</span> Every home deserves water that's safe to drink and pleasant to use. We start with facts, not a sales pitch: what's actually in your water, what it means, and which fixes are worth it.</p>
+        </div>
+        <div>
+          <h2>Who we are</h2>
+          <p><span class="ph">Placeholder</span> [Add a short company story: founder, how long you've been serving the area, and which counties you cover.]</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">How it works</h2>
+      <ol class="steps steps-5">
+        <li><div class="step-icon">📍</div><h3>Look up</h3><p>Enter your address. We figure out whether you're on public water or a private well.</p></li>
+        <li><div class="step-icon">📊</div><h3>Instant water report</h3><p>See the most important issues first, built from EPA records for public water or Penn State county well data, explained in plain English.</p></li>
+        <li><div class="step-icon">🧪</div><h3>Test (optional)</h3><p>Want numbers for your own house? Order a certified lab test yourself, then upload the results.</p></li>
+        <li><div class="step-icon">💬</div><h3>Consult</h3><p>Book online: a free virtual call anywhere in PA, or an in-home visit (a $100 deposit, credited toward any system you buy).</p></li>
+        <li><div class="step-icon">💧</div><h3>Install</h3><p>We install the right system, such as filtration, softening, UV or RO, for homes in our service area around Phoenixville. <span class="ph">Placeholder</span> [List your product lines.]</p></li>
+      </ol>
+
+      <div class="cta-band">
+        <div><h3>Curious what's in your water?</h3><p>The address lookup is free and takes a few seconds.</p></div>
+        <a href="#/" class="btn btn-primary">Check my water</a>
+      </div>
+
+      <div id="contact" class="two-col contact">
+        <div>
+          <h2>Talk to us</h2>
+          <p>Questions about hard water, a strange taste or smell, or a test result you don't understand? Send us a note and we'll get back to you.</p>
+          <p class="muted small"><span class="ph">Placeholder</span> [Add phone, email and service area once confirmed.]</p>
+        </div>
+        <div class="lead-slot" data-form="contact"></div>
+      </div>
+    </section>
+  </template>
+
+
+
+  <template id="tpl-notfound">
+    <section class="page narrow center">
+      <div class="big-icon">🔎</div>
+      <h1>We couldn't find that address</h1>
+      <p class="muted" data-f="msg">Double-check the street number and spelling, and include the city and ZIP code. New construction and some rural addresses may not be in the Census address database yet.</p>
+      <a href="#/" class="btn btn-primary">Try again</a>
+      <div class="card" style="margin-top:2rem;text-align:left">
+        <h2>Still stuck?</h2>
+        <p>Leave your details and we'll look it up for you.</p>
+        <div class="lead-slot" data-form="lookup-help"></div>
+      </div>
+    </section>
+  </template>
+
+  <template id="tpl-leadform">
+    <form class="leadform">
+      <div class="row">
+        <label>Name<input name="name" required autocomplete="name"></label>
+        <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+      </div>
+      <label>Email<input name="email" type="email" autocomplete="email"></label>
+      <label>Address<input name="address" autocomplete="street-address"></label>
+      <label class="msg-field">Anything we should know? <span class="muted">(optional)</span><textarea name="message" rows="3"></textarea></label>
+      <button type="submit" class="btn btn-primary"></button>
+      <p class="small muted">We'll only use this to contact you about your water. <span class="ph">Beta</span> Leads are saved to a local file on the server for now.</p>
+      <p class="form-error error" hidden></p>
+    </form>
+  </template>
+
+
+  <template id="tpl-next-steps">
+    <div class="card cta-card">
+      <h2>Next step: get a thorough test</h2>
+      <p data-f="test-intro"></p>
+      <p><strong>You order the test yourself, directly from a certified lab.</strong> We don't sell or run lab tests. That keeps the results independent, and you own them. In Pennsylvania, use a lab accredited by the Department of Environmental Protection (DEP) for drinking water.</p>
+      <ul class="ticks">
+        <li><a href="https://www.pa.gov/agencies/dep/residents/my-water/private-wells/water-testing" target="_blank" rel="noopener">PA DEP: Water testing and how to find a certified lab ↗</a> (includes DEP's lists of accredited drinking water labs)</li>
+        <li><a href="https://www.pa.gov/agencies/dep/data-and-tools/reports/laboratory-reports" target="_blank" rel="noopener">PA DEP: Search accredited environmental laboratories ↗</a></li>
+        <li><a href="https://extension.psu.edu/testing-your-drinking-water" target="_blank" rel="noopener">Penn State Extension: Testing your drinking water ↗</a> (what to test for and when)</li>
+      </ul>
+      <p class="small muted">Ask the lab for a drinking water package that fits your concerns. Prices and turnaround vary by lab and by test.</p>
+      <div class="next-buttons">
+        <a href="#/upload" class="btn btn-primary">I have results: upload them</a>
+        <a href="#/book" class="btn btn-outline">Book a consultation</a>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-upload">
+    <section class="page narrow">
+      <p class="eyebrow dark">Step 3 of 5</p>
+      <h1>Upload your lab results</h1>
+      <p class="muted">Send us your certified lab report as a PDF or a clear photo. We'll keep it on file for your consultation.</p>
+      <form id="upload-form" class="card leadform">
+        <label class="drop" id="drop">
+          <input type="file" name="file" id="file" accept="application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif" required>
+          <span class="drop-icon">📄</span>
+          <span class="drop-text" id="drop-text"><strong>Choose a file</strong> or drag it here<br><span class="small muted">PDF, JPG, PNG or HEIC, up to <span data-f="maxmb"></span> MB</span></span>
+        </label>
+        <div class="row">
+          <label>Name<input name="name" required autocomplete="name"></label>
+          <label>Phone<input name="phone" type="tel" required autocomplete="tel"></label>
+        </div>
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label>Address<input name="address" required autocomplete="street-address"></label>
+        <label>Anything we should know? <span class="muted">(optional)</span><textarea name="notes" rows="2" placeholder="e.g. well water, orange stains in the tub, smells like eggs"></textarea></label>
+        <button type="submit" class="btn btn-primary">Upload results</button>
+        <p class="small muted"><span class="ph">Beta</span> Files are saved on our server so our team can review them before your consultation.</p>
+        <p class="form-error error" hidden></p>
+      </form>
+    </section>
+  </template>
+
+  <template id="tpl-uploaded">
+    <section class="page narrow">
+      <div class="success big">✅ Your results were received.</div>
+      <div class="card">
+        <h2>Quick AI summary</h2>
+        <div class="ai-placeholder">
+          <p><span class="ph">Coming later</span> An AI summary of your results, highlighting anything above EPA limits and common nuisances like hardness or iron, is coming in a later version.</p>
+          <p class="muted">For now, a team member will review your report before your consultation.</p>
+        </div>
+        <p class="small muted">File received: <span data-f="filename"></span></p>
+      </div>
+      <div class="card cta-card">
+        <h2>Next: book a consultation</h2>
+        <p>Go over your results with us on a free virtual call, or have us visit your home.</p>
+        <a href="#/book" class="btn btn-primary">Book a consultation</a>
+      </div>
+    </section>
+  </template>
+
+
+
+
+  <template id="tpl-report">
+    <section class="page report">
+     <div class="report-layout">
+     <div class="report-main">
+      <a href="#/" class="back">← Check another address</a>
+
+      <!-- 1. Score at the top -->
+      <div class="result-head score-head" data-f="head">
+        <div class="score-text">
+          <div class="badge" data-f="badge"></div>
+          <h1>Your Water Report</h1>
+          <p class="muted" data-f="sub"></p>
+        </div>
+        <div class="dial-wrap">
+          <div data-f="dial"></div>
+          <div class="dial-label" data-f="score-label"></div>
+          <div class="dial-sub" data-f="score-sub"></div>
+        </div>
+      </div>
+
+      <div class="source-line" data-f="srcline">
+        <p class="sl-text"><span data-f="sl-text"></span> <button type="button" class="linkish" data-f="sl-switch"></button></p>
+        <div class="sl-prompt" data-f="sl-prompt" hidden>
+          <div class="sl-head"><span class="src-icon">?</span><div><strong>Please check: we couldn't tell for sure if you're on public water or a well.</strong><p class="small" data-f="sl-guess"></p></div></div>
+          <ul class="src-reasons small" data-f="sl-reasons"></ul>
+          <div class="chipset single" data-f="sl-chips">
+            <button type="button" data-src="public">Public water</button>
+            <button type="button" data-src="well">Private well</button>
+            <button type="button" data-src="unsure">Not sure</button>
+          </div>
+          <details class="howtell" data-f="howtell">
+          <summary>How to tell if you're on public water or a well</summary>
+          <div class="howtell-grid">
+            <div><h3>💧 Public water</h3><ul>
+              <li>You get a <strong>water bill</strong> (often with sewer) from a utility, borough or authority.</li>
+              <li>There's a <strong>water meter</strong> where the pipe comes into the house.</li>
+              <li>Neighbors on your street share the same water company.</li></ul></div>
+            <div><h3>🕳️ Private well</h3><ul>
+              <li><strong>No water bill</strong> at all (you may still pay for sewer or have septic).</li>
+              <li>A <strong>well cap</strong> in the yard: a pipe sticking up about a foot, with a cap.</li>
+              <li>A <strong>pressure tank</strong> (blue or gray tank) and pressure switch in the basement, or a pump that clicks on when water runs.</li>
+              <li>No water when the power goes out.</li></ul></div>
+          </div>
+          <p class="small muted">Still not sure? Pick "Not sure" and we'll keep showing our best guess.</p>
+        </details>
+        </div>
+      </div>
+      <details class="card how-score">
+        <summary><strong>How the score works</strong> <span class="muted" data-f="score-cost"></span></summary>
+        <div data-f="score-detail"></div>
+      </details>
+
+      <!-- 2. What to watch for -->
+      <div class="card watch-card" id="watch">
+        <div class="summary-top"><h2>What to watch for in your area</h2><span class="engine" data-f="engine"></span></div>
+        <p class="watch-intro" data-f="summary"></p>
+        <ol class="watch-list" data-f="watch"></ol>
+        <p class="sensitive-note small" data-f="sensitive" hidden></p>
+        <div class="watch-cta">
+          <a href="#/book" class="btn btn-primary">Book a consultation</a>
+          <a href="#detailed" class="btn btn-outline" data-jump="detailed">Get a more detailed analysis</a>
+        </div>
+      </div>
+
+      <!-- 2b. Recommended for your home -->
+      <div class="card rec-panel" id="recommended">
+        <div class="summary-top"><h2>Recommended for your home</h2><span class="engine">Based on your report</span></div>
+        <p class="rec-intro" data-f="rec-intro"></p>
+        <div class="rec-cards" data-f="rec-cards"></div>
+        <p class="small muted rec-foot" data-f="rec-foot"></p>
+      </div>
+
+      <!-- 3. Gauges -->
+      <h2 class="section-title">Your water at a glance</h2>
+      <p class="muted small" data-f="gauge-note"></p>
+      <div class="gauges" data-f="gauges"></div>
+      <!-- 3b. Go further: detailed analysis -->
+      <div class="card detail-card" id="detailed">
+        <h2>Get a more detailed analysis</h2>
+        <p data-f="detail-intro"></p>
+        <div class="pipeline" data-f="pipeline"></div>
+        <p class="small" data-f="detail-after"></p>
+        <div class="detail-options">
+          <div class="d-opt" id="refine">
+            <div class="d-k">Option 1 · Free · about 30 seconds</div>
+            <h3>Answer a few quick questions</h3>
+            <p class="small muted">We'll refine this report: concerns and recommendations based on your home, what you notice, and what matters to you. Skip any question.</p>
+            <div data-f="questions"></div>
+            <p class="form-error error" data-f="q-err" hidden></p>
+            <div class="intake-actions"><button type="button" class="btn btn-primary" data-f="q-go">Update my report</button><span class="small muted" data-f="q-status"></span></div>
+          </div>
+          <div class="d-opt" id="test-home">
+            <div class="d-k">Option 2 · Most accurate</div>
+            <h3>Test the water at your tap</h3>
+            <p class="small">Order a test yourself, directly from a certified lab. We don't sell or run lab tests, so the results are independent and yours. In Pennsylvania, use a DEP-accredited drinking water lab. Then upload the results and we'll go through them with you.</p>
+            <ul class="ticks small">
+              <li><a href="https://www.pa.gov/agencies/dep/residents/my-water/private-wells/water-testing" target="_blank" rel="noopener">PA DEP: Water testing and how to find a certified lab ↗</a></li>
+              <li><a href="https://www.pa.gov/agencies/dep/data-and-tools/reports/laboratory-reports" target="_blank" rel="noopener">PA DEP: Search accredited environmental laboratories ↗</a></li>
+              <li><a href="https://extension.psu.edu/testing-your-drinking-water" target="_blank" rel="noopener">Penn State Extension: Testing your drinking water ↗</a></li>
+            </ul>
+            <a href="#/upload" class="btn btn-outline">Upload your lab results</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-big">
+        <div>
+          <h2>Fix it with the right system</h2>
+          <p>Book a <strong>free virtual consult</strong> anywhere in PA, or an <strong>in-home visit</strong> with on-site testing. The $100 deposit is credited toward any system you buy.</p>
+        </div>
+        <a href="#/book" class="btn btn-light btn-lg">Book a consultation</a>
+      </div>
+
+
+
+      <!-- 4. Complete data -->
+      <h2 class="section-title">Complete data</h2>
+      <div class="complete" data-f="complete"></div>
+
+      <div class="disclaimer small muted">
+        <p data-f="caveat"></p>
+        <p><strong>Disclaimer:</strong> This report and score are generated automatically from public data. They are general information, not a safety rating, not medical advice and not a test of your home's water. Standards cited are U.S. EPA drinking water standards. For health questions, talk to your doctor or the PA Department of Health.</p>
+        <p data-f="sources"></p>
+      </div>
+     </div>
+     <aside class="side-card" data-f="side">
+       <div class="side-inner">
+         <div class="side-k">Top pick for your home</div>
+         <h3 data-f="side-title"></h3>
+         <p class="side-prod" data-f="side-prod"></p>
+         <p class="side-price" data-f="side-price"></p>
+         <a href="#/book?type=virtual" class="btn btn-primary">Book a free virtual consult</a>
+         <button type="button" class="linkish" data-f="side-why">See why we recommend it ↓</button>
+         <p class="small muted">Free, 20–30 minutes, anywhere in PA. No obligation.</p>
+       </div>
+     </aside>
+     </div>
+     <a href="#/solutions" class="skip-sol">Skip to solutions →</a>
+     <div class="sticky-bar" data-f="bar">
+       <div><span class="bar-k">Top pick</span><strong data-f="bar-prod"></strong><span class="bar-price" data-f="bar-price"></span></div>
+       <div class="bar-btns"><a href="#/solutions" class="btn btn-outline">Solutions →</a><a href="#/book?type=virtual" class="btn btn-primary">Free consult</a></div>
+     </div>
+    </section>
+  </template>
+
+  <template id="tpl-book">
+    <section class="page narrow">
+      <p class="eyebrow dark">Book a consultation</p>
+      <h1>Pick a time that works</h1>
+      <p class="muted">Choose virtual or in-home, pick an open time, and you're booked. We'll confirm by email or phone.</p>
+      <form id="book-form" class="leadform" novalidate>
+        <h3 class="step-h"><span class="dot">1</span> Type of consultation</h3>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="option" value="virtual">
+            <div class="option-body">
+              <div class="option-head"><h3>Virtual</h3><span class="price">Free</span></div>
+              <p><span data-f="vmin"></span> minute video call. Available anywhere in Pennsylvania.</p>
+              <ul class="ticks small"><li>Go over your water report or lab results</li><li>Honest next steps and options</li></ul>
+            </div>
+          </label>
+          <label class="option">
+            <input type="radio" name="option" value="in-home">
+            <div class="option-body">
+              <div class="option-head"><h3>In-home</h3><span class="price">$<span data-f="dep"></span> deposit</span></div>
+              <p>Credited toward any system you buy within <span data-f="credit"></span> days <span class="ph">Placeholder</span>.</p>
+              <ul class="ticks small"><li>On-site water testing</li><li>A look at your plumbing and the space for equipment</li><li>Written report with our recommendation</li></ul>
+            </div>
+          </label>
+        </div>
+
+        <h3 class="step-h"><span class="dot">2</span> Your address</h3>
+        <div class="card">
+          <label><span data-f="addr-label">Address</span><span class="addr-row"><input name="address" id="book-address" autocomplete="street-address" placeholder="Street, city, PA ZIP"><button type="button" class="btn btn-outline btn-small2" id="check-dist">Check</button></span></label>
+          <div id="distance-note" class="distance-note" hidden></div>
+          <div id="price-box" class="price-box" hidden></div>
+        </div>
+
+        <h3 class="step-h"><span class="dot">3</span> Pick a time <span class="small muted" data-f="tz"></span></h3>
+        <div class="card cal-card">
+          <div id="cal-empty" class="muted">Choose virtual or in-home above to see open times.</div>
+          <div id="cal-days" class="cal-days" role="tablist"></div>
+          <div id="cal-slots" class="cal-slots"></div>
+          <p id="cal-picked" class="cal-picked" hidden></p>
+        </div>
+
+        <h3 class="step-h"><span class="dot">4</span> Your details</h3>
+        <div class="card">
+          <div class="row">
+            <label>Name<input name="name" required autocomplete="name"></label>
+            <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+          </div>
+          <label>Email<input name="email" type="email" autocomplete="email"></label>
+          <label>Anything else? <span class="muted">(optional)</span><textarea name="notes" rows="2"></textarea></label>
+          <button type="submit" class="btn btn-primary btn-lg">Confirm booking</button>
+          <p class="small muted">No payment is taken online yet. <span class="ph">Next step</span> Deposit collection (e.g. Stripe) will be added later.</p>
+          <p class="form-error error" hidden></p>
+        </div>
+        <p class="small muted" data-f="area-note"></p>
+      </form>
+    </section>
+  </template>
+
+  <template id="tpl-booked">
+    <section class="page narrow">
+      <div class="success big">✅ You're booked, <span data-f="first"></span>!</div>
+      <div class="card">
+        <h2 data-f="when"></h2>
+        <div class="facts">
+          <div><span>Consultation</span><strong data-f="type"></strong></div>
+          <div><span>Length</span><strong data-f="len"></strong></div>
+          <div><span>Booking #</span><strong data-f="id"></strong></div>
+        </div>
+        <div data-f="pricing"></div>
+        <p data-f="details"></p>
+        <p class="muted small">We'll send a confirmation by email or phone. Need to change it? Just reply to that message. <span class="ph">Beta</span> No calendar invite or payment is sent automatically yet.</p>
+      </div>
+      <a href="#/" class="back">← Back to start</a>
+    </section>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

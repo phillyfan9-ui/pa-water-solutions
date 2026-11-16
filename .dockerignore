@@ -1,0 +1,18 @@
+# Keep the image small and free of local/customer data.
+node_modules
+npm-debug.log
+screenshots
+scripts
+.git
+.gitignore
+.env*
+*.tmp
+fly.toml
+Dockerfile
+.dockerignore
+# Writable data (lives on the volume in production). Keep data/reference and data/solutions.json.
+data/leads.json
+data/bookings.json
+data/source-confirmations.json
+data/uploads
+data/*.tmp

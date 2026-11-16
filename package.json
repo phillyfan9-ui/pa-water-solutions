@@ -1,0 +1,9 @@
+{
+  "name": "pa-water-solutions-beta",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PA Water Solutions beta: address lookup -> public water system or likely well",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
